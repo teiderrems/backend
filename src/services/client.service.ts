@@ -1,9 +1,10 @@
-import { ClientModel, ClientSchema } from "../mocks/models";
+import { ClientModel } from "../mocks/models";
 import bcrypt from "bcrypt"
 
 import * as jwt from "jsonwebtoken"
 
 import dotenv from "dotenv";
+import { Error } from "mongoose";
 
 dotenv.config();
 
@@ -16,38 +17,70 @@ interface Client{
 };
 
 const findAll=async()=>{
-    return await ClientModel.find({});
+    try {
+        return await ClientModel.find({});
+    } catch (error:any) {
+        throw new Error(error.message);
+    }
 }
 
 const findOne=async(id:any)=>{
-    return await ClientModel.findById(id)??{};
+    try {
+        return await ClientModel.findById(id);
+    } catch (error:any) {
+        throw new Error(error.message);
+    }
 }
 
 
 const create= async(client:any)=>{
     const salt=bcrypt.genSaltSync(10);
     client.password=bcrypt.hashSync(client.password,salt);
-    return await ClientModel.create(client);
+    try {
+        return await ClientModel.create(client);
+    } catch (error:any) {
+        throw new Error(error.message);
+    }
 }
 
 const update=async(id:any,client:any)=>{
     client.id=id;
-    return await ClientModel.findOneAndUpdate(client)??{};
+    try {
+        return await ClientModel.findOneAndUpdate(client);
+    } catch (error:any) {
+        throw new Error(error.message);
+    }
 }
 
 const remove=async(id:any)=>{
-    return await ClientModel.findByIdAndDelete(id)??{};
+    try {
+        return await ClientModel.findByIdAndDelete(id);
+    } catch (error:any) {
+        throw new Error(error.message);
+    }
+}
+
+const getClient=async(username:string)=>{
+    try {
+        return (((await ClientModel.findOne({email:username}))||(await ClientModel.findOne({username:username}))) as Client);
+    } catch (error:any) {
+        throw new Error(error.message); 
+    }
 }
 
 const login=async(credentiel:any)=>{
+    
     if(credentiel!=null){
-        const user:Client=(((await ClientModel.findOne({email:credentiel.email}))||(await ClientModel.findOne({username:credentiel.username}))) as Client);
+        const user:Client=await (getClient(credentiel.username));
         if (user!=null && user!=undefined) {
+            
             const hashpw=user.password;
-            if (bcrypt.compareSync(credentiel.password,(hashpw as string))) {
+            const islog=bcrypt.compareSync(credentiel.password,(hashpw as string));
+            if (islog) {
+                
                 const token= jwt.sign({_id:user._id,username:user.username,firstname:user?.firstname,email:user?.email},process.env.SECRET_KEY!,{
                     algorithm:"HS256",
-                    expiresIn:"1h"
+                    expiresIn:"5m"
                 });
                 return token;
             }

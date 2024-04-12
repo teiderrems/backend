@@ -20,7 +20,7 @@ const findAll=async()=>{
     try {
         return await ClientModel.find({});
     } catch (error:any) {
-        throw new Error(error.message);
+        return error.message;
     }
 }
 
@@ -28,7 +28,7 @@ const findOne=async(id:any)=>{
     try {
         return await ClientModel.findById(id);
     } catch (error:any) {
-        throw new Error(error.message);
+        return error.message;
     }
 }
 
@@ -39,7 +39,7 @@ const create= async(client:any)=>{
     try {
         return await ClientModel.create(client);
     } catch (error:any) {
-        throw new Error(error.message);
+        return error.message;
     }
 }
 
@@ -48,7 +48,7 @@ const update=async(id:any,client:any)=>{
     try {
         return await ClientModel.findOneAndUpdate(client);
     } catch (error:any) {
-        throw new Error(error.message);
+        return error.message;
     }
 }
 
@@ -56,7 +56,7 @@ const remove=async(id:any)=>{
     try {
         return await ClientModel.findByIdAndDelete(id);
     } catch (error:any) {
-        throw new Error(error.message);
+        return error.message;
     }
 }
 
@@ -64,14 +64,14 @@ const getClient=async(username:string)=>{
     try {
         return (((await ClientModel.findOne({email:username}))||(await ClientModel.findOne({username:username}))) as Client);
     } catch (error:any) {
-        throw new Error(error.message); 
+        return error.message;
     }
 }
 
 const login=async(credentiel:any)=>{
     
     if(credentiel!=null){
-        const user:Client=await (getClient(credentiel.username));
+        const user:any=await (getClient(credentiel.username));
         if (user!=null && user!=undefined) {
             
             const hashpw=user.password;

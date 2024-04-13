@@ -1,4 +1,4 @@
-import { ClientModel } from "../mocks/models";
+import { ClientModel, OrderModel } from "../mocks/models";
 import bcrypt from "bcrypt"
 
 import * as jwt from "jsonwebtoken"

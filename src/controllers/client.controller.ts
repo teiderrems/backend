@@ -1,6 +1,7 @@
 import { Request, Response } from "express"
 
 import * as ClientService from "../services/client.service"
+import { OrderModel } from "../mocks/models";
 
 
 const findAll = async (req: Request, res: Response) => {
@@ -12,10 +13,11 @@ const findAll = async (req: Request, res: Response) => {
     }
 }
 
-const findOne = async (req: Request, res: Response) => {
+const findOne = async (req: any, res: Response) => {
 
     try {
-        return res.status(200).json(await ClientService.findOne(req.params.id));
+        const orders=await OrderModel.find({Owner:req?.user});
+        return res.status(200).json({user:await ClientService.findOne(req.params.id),orders});
         
     } catch (error: any) {
         return res.status(404).json({"message":error.message});

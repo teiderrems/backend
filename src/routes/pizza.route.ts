@@ -7,9 +7,9 @@ const pizzaRouter=Router();
 
 pizzaRouter.get("/",Authorize,PizzaController.findAll);
 pizzaRouter.get("/:id",PizzaController.findOne);
-pizzaRouter.post("/",PizzaController.create);
-pizzaRouter.put("/:id",PizzaController.update);
-pizzaRouter.delete("/:id",PizzaController.remove);
+pizzaRouter.post("/",Authorize,PizzaController.create);
+pizzaRouter.put("/:id",Authorize,PizzaController.update);
+pizzaRouter.delete("/:id",Authorize,PizzaController.remove);
 
 
 export default pizzaRouter;

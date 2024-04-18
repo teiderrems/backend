@@ -11,7 +11,7 @@ const findAll=async()=>{
 
 const findOne=async(id:any)=>{
     try {
-        return await PizzaModel.findById(id);
+        return await PizzaModel.findById(id)??[];
     } catch (error:any) {
         return error.message;
     }
@@ -20,7 +20,7 @@ const findOne=async(id:any)=>{
 
 const create= async(pizza:any)=>{
     try {
-        return await PizzaModel.create(pizza);
+        return await PizzaModel.create(pizza)??{};
     } catch (error:any) {
         return error.message;
     }
@@ -29,7 +29,7 @@ const create= async(pizza:any)=>{
 const update=async(id:any,pizza:any)=>{
     pizza.id=id;
     try {
-        return await PizzaModel.findOneAndUpdate(pizza);
+        return await PizzaModel.findOneAndUpdate(pizza)??{};
     } catch (error:any) {
         return error.message;
     }
@@ -37,7 +37,7 @@ const update=async(id:any,pizza:any)=>{
 
 const remove=async(id:any)=>{
     try {
-        return await PizzaModel.findByIdAndDelete(id);
+        return await PizzaModel.findByIdAndDelete(id)??{};
     } catch (error:any) {
         return error.message;
     }

@@ -3,7 +3,7 @@ import { OrderModel } from "../mocks/models";
 
 const findAll=async()=>{
     try {
-        return await OrderModel.find({});
+        return await OrderModel.find({})??[];
     } catch (error:any) {
         return error.message;
     }
@@ -11,7 +11,7 @@ const findAll=async()=>{
 
 const findOne=async(id:any)=>{
     try {
-        return await OrderModel.findById(id);
+        return await OrderModel.findById(id)??{};
     } catch (error:any) {
         return error.message;
     }
@@ -20,7 +20,13 @@ const findOne=async(id:any)=>{
 
 const create= async(order:any)=>{
     try {
-        return await OrderModel.create(order);
+        const ord=new OrderModel({
+            items:order.items,
+            quantity:order.quantity,
+            owner:order.owner,
+            amount:order.amount
+        })
+        return await  ord.save();//OrderModel.create(order)??{};
     } catch (error:any) {
         return error.message;
     }
@@ -29,7 +35,7 @@ const create= async(order:any)=>{
 const update=async(id:any,order:any)=>{
     order.id=id;
     try {
-        return await OrderModel.findOneAndUpdate(order);
+        return await OrderModel.findOneAndUpdate(order)??{};
     } catch (error:any) {
         return error.message;
     }
@@ -37,7 +43,7 @@ const update=async(id:any,order:any)=>{
 
 const remove=async(id:any)=>{
     try {
-        return await OrderModel.findByIdAndDelete(id);
+        return await OrderModel.findByIdAndDelete(id)??{};
     } catch (error:any) {
         return error.message;
     }

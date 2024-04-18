@@ -8,25 +8,32 @@ const findAll=async(req:Request,res:Response)=>{
 }
 
 const findOne=async(req:Request,res:Response)=>{
-    return  res.status(200).json(await OrderService.findOne(req.params.id));
+    if (req.params){
+        return  res.status(200).json(await OrderService.findOne(req.params.id));
+    }
 }
 
 
 const create= async(req:any,res:Response)=>{
-    const{order}= req.body;
-    const {user}=req;
-    order.Owner=user;
-    req.body.Owner=user;
-    return  res.status(201).json(await OrderService.create(order??req.body));
+    if (req.user && req.body){
+        req.body.owner=req.user._id;
+        return  res.status(201).json(await OrderService.create(req.body));
+    }
+    return res.status(401).send({message:"UnAuthorize"});
 }
 
 const update=async(req:Request,res:Response)=>{
-    const{order}=req.body;
-    return  res.status(201).json(await OrderService.update(req.params.id,order??req.body));
+    if (req.body && req.params){
+        return  res.status(201).json(await OrderService.update(req.params.id,req.body));
+    }
+    return res.status(404).send({message:"NotFound"});
 }
 
 const remove=async(req:Request,res:Response)=>{
-    return  res.status(204).json(await OrderService.remove(req.params.id));
+    if (req.params){
+        return  res.status(204).json(await OrderService.remove(req.params.id));
+    }
+    return res.status(404).send({message:"NotFound"});
 }
 
 export{findAll,findOne,create,update,remove}

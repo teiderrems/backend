@@ -3,7 +3,6 @@ import {  Schema,model } from "mongoose";
 const PizzaSchema:Schema=new Schema({
     name:{
         type:String,
-        unique:true,
         require:true
     },
     description:{
@@ -12,10 +11,20 @@ const PizzaSchema:Schema=new Schema({
     price:{
         type:Number,
         default:0.0
+    },
+    owner:{
+        type:String,
+        require:true,
     }
 },{
     versionKey:false
 });
+
+enum Role{
+    GUEST='guest',
+    ADMIN='admin',
+    SELLER='seller'
+}
 
 const ClientSchema:Schema=new Schema({
     username:{
@@ -25,7 +34,7 @@ const ClientSchema:Schema=new Schema({
     },
     email:{
         type:String,
-        unique:true
+        required:true,
     },
     firstname:{
         type:String
@@ -33,6 +42,10 @@ const ClientSchema:Schema=new Schema({
     password:{
         type:String,
         require:true
+    },
+    role:{
+        type:typeof Role,
+        default:Role.GUEST
     }
 },{
     versionKey:false
@@ -46,7 +59,13 @@ const OrderSchema:Schema=new Schema({
         type:Number,
         default:0
     },
-    Owner:ClientSchema
+    owner:{
+        type:String
+    },
+    amount:{
+        type:Number,
+        default:0.0
+    }
 },{
     versionKey:false
 })
